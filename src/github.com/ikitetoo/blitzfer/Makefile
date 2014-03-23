@@ -1,4 +1,7 @@
-all: build
+all: install
 
 build:
-	go build blitzfer.go
+	go build
+
+install:
+	go install
