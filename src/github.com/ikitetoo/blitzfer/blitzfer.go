@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"flag"
-//	"strings"
 	"os"
 	"path/filepath"
 )
@@ -22,11 +21,6 @@ func main() {
 
 	fmt.Printf("Blitzfer Version: %v\n", VERSION)
 	scandir(source_path)
-
-//	if !strings.ContainsAny(source_path, "/ | .") {
-//		fmt.Printf("Not a valid directory: %v\n", source_path)
-//	} else {
-//	}
 }
 
 func scandir (path string) {
