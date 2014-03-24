@@ -1,19 +1,76 @@
 package main
 
-import "fmt"
-import "flag"
-//import "strings"
-//import "io/ioutil"
+import (
+	"fmt"
+	"flag"
+//	"strings"
+	"os"
+	"path/filepath"
+)
 
-var source string
+var DEBUG bool
+const (
+        VERSION = "0.0.1"
+)
 
 func main() {
-	flag.StringVar(&source, "directory", ".", "Path of directory to scan.")
+	var source_path string
+	DEBUG = true
+
+	flag.StringVar(&source_path, "directory", ".", "Path of directory to scan.")
 	flag.Parse()
-	fmt.Printf("%v\n", source)
 
-//	if !source.contains("/", ".") {
-//		fmt.Printf("Not a valid directory")
+	fmt.Printf("Blitzfer Version: %v\n", VERSION)
+	scandir(source_path)
+
+//	if !strings.ContainsAny(source_path, "/ | .") {
+//		fmt.Printf("Not a valid directory: %v\n", source_path)
+//	} else {
 //	}
+}
 
+func scandir (path string) {
+	var d FsMetaData
+	var f FsMetaData
+
+	finfo, err := os.Stat(path)
+	if err != nil {
+	    fmt.Printf("%v no such file or directory\n", path)
+	}
+	mode := finfo.Mode()
+
+	// Directories
+	if finfo.IsDir() {
+	    if DEBUG {
+		fmt.Printf("Dir Found: %v\n", path)
+		return
+            }
+	    d.path = path
+	    d.info = finfo
+	    d.mode = mode
+	    d.parent = filepath.Dir(path)
+	    if DEBUG {
+	    	fmt.Printf("Dir Struct: [%v]\n", d)
+	    }
+
+	    return
+	}
+
+	// Files
+	if mode.IsRegular() {
+            if DEBUG {	
+   	        fmt.Printf("File Found: %v\n", path)
+		return
+	    }
+	    f.path = path
+	    f.info = finfo
+	    f.mode = mode
+	    f.parent = filepath.Dir(path)
+	    if DEBUG {
+		fmt.Printf("File Struct: [%v]\n", f)
+	    }
+	
+	    return
+	}
+	
 }

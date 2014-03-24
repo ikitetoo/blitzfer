@@ -1,3 +1,3 @@
-export GOBIN=$HOME/blitzfer
+export GOBIN=$HOME/blitzfer/bin
 export GOPATH=$HOME
 export PATH=$GOBIN:$PATH
