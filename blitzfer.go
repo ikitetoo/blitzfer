@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+//	"fmt"
 	"flag"
 )
 
@@ -19,6 +19,6 @@ func main() {
 	flag.StringVar(&source_path, "directory", ".", "Path of directory to scan.")
 	flag.Parse()
 
-	fmt.Printf("Blitzfer Version: %v\n", VERSION)
+//	fmt.Printf("Blitzfer Version: %v\n", VERSION)
 	ScanInit(source_path)
 }
