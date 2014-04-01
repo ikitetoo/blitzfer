@@ -34,16 +34,23 @@ func SetLink(path string, fi os.FileInfo) FsMetaData {
 	return l
 }
 
+func SetDevice(path string, fi os.FileInfo) FsMetaData {
+	var d FsMetaData
+	d.path = path
+	d.info = fi
+	d.mode = fi.Mode()
+	d.parent = filepath.Dir(path)
+	return d
+}
+
 func ScanDir(dir FsMetaData) {
 	if DEBUG {
-//		fmt.Printf("[d] ", dir.path)
-		fmt.Printf("%v\n", dir.path)
+		fmt.Printf("[d] %v\n", dir.path)
 	}
 
 	d, err := os.Open(dir.path)
 	if err != nil {
 		log.Printf("%v", err)
-//		log.Fatal(err)
 	}
 	defer d.Close()
 
@@ -56,21 +63,54 @@ func ScanDir(dir FsMetaData) {
 		// This should be switch/case
 		if finfo.IsDir() {
 			d := SetDir(path, finfo)
+			SetDir(path, finfo)
+			fmt.Print("[d] %v\n", path)
 			ScanDir(d)
+			continue
 		}
 
 		if m.IsRegular() {
 			SetFile(path, finfo)
-//			fmt.Printf("[f] %v\n", path)
-			fmt.Printf("%v\n", path)
+			fmt.Printf("[f] %v\n", path)
+			continue
 		}
+/*
+os.ModeSetuid      // u: setuid
+os.ModeSetgid      // g: setgid
+os.ModeSticky      // t: sticky
+*/
 
-		if finfo.Mode() & os.ModeSymlink == os.ModeSymlink {
-			SetLink(path, finfo)
-			fmt.Printf("[l] ", path)
-			fmt.Printf("%v\n", path)
+		switch finfo.Mode() & os.ModeSymlink {
+
+			case os.ModeSymlink:     // L: Symbolic Link
+				rl, err := ReadLink(path)
+				if err != nil {
+					log.Printf("%v", err)
+				}
+				SetLink(path, finfo)
+				fmt.Printf("[L] %v\n", path)
+
+			case os.ModeDevice:      // D: device
+				SetDevice(path, finfo)
+				fmt.Printf("[D] %v\n", path)
+
+/*
+			case os.ModeNamedPipe:   // p: named pipe (FIFO)
+				SetFifo(path, finfo)
+				fmt.Printf("[p] %v\n", path)
+
+			case os.ModeSocket:      // S: Unix domain socket
+				SetSocket(path, finfo)
+				fmt.Printf("[S] %v\n", path)
+
+			case os.ModeCharDevice:  // c: Unix character device, when ModeDevice is set
+				SetCharDev(path, finfo)
+				fmt.Printf("[c] %v\n", path)
+*/
+
+			default:
+				fmt.Printf("[u] %v\n", path)
 		}
-
 
 	}
 }
@@ -83,10 +123,6 @@ func ScanInit(path string) {
         }
 
         if finfo.IsDir() {
-
-            if DEBUG {
-//                fmt.Printf("Root Dir Found: %v\n", path)
-            }
 
 	    d := SetDir(path, finfo)
 	    ScanDir(d)
