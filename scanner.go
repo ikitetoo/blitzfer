@@ -3,57 +3,24 @@ package main
 import (
         "fmt"
         "os"
-        "path/filepath"
 	"log"
 )
 
-func SetDir(path string, fi os.FileInfo) FsMetaData {
-	var d FsMetaData
-	d.path = path
-	d.info = fi
-	d.mode = fi.Mode()
-	d.parent = filepath.Dir(path)
-	return d
-}
+func scanDir(dir FsMetaData) {
 
-func SetFile(path string, fi os.FileInfo) FsMetaData {
-	var f FsMetaData
-	f.path = path
-	f.info = fi
-	f.mode = fi.Mode()
-	f.parent = filepath.Dir(path)
-	return f
-}
-
-func SetLink(path string, fi os.FileInfo) FsMetaData {
-	var l FsMetaData
-	l.path = path
-	l.info = fi
-	l.mode = fi.Mode()
-	l.parent = filepath.Dir(path)
-	return l
-}
-
-func SetDevice(path string, fi os.FileInfo) FsMetaData {
-	var d FsMetaData
-	d.path = path
-	d.info = fi
-	d.mode = fi.Mode()
-	d.parent = filepath.Dir(path)
-	return d
-}
-
-func ScanDir(dir FsMetaData) {
-	if DEBUG {
+	// Declare what we're scanning.
+	if debug {
 		fmt.Printf("[d] %v\n", dir.path)
 	}
 
+	// Open the directory for scanning.
 	d, err := os.Open(dir.path)
 	if err != nil {
-		log.Printf("%v", err)
+		log.Printf("[%v]\n", err)
 	}
 	defer d.Close()
 
+	// Start scanning or fault.
 	f, err := d.Readdir(-1)
 	for _, finfo := range f {
 		path := dir.path+"/"+finfo.Name()
@@ -62,15 +29,15 @@ func ScanDir(dir FsMetaData) {
 
 		// This should be switch/case
 		if finfo.IsDir() {
-			d := SetDir(path, finfo)
-			SetDir(path, finfo)
-			fmt.Print("[d] %v\n", path)
-			ScanDir(d)
+			d := setDir(path, finfo)
+			pq <- d
+			fmt.Printf("[d] %v\n", path)
+			scanDir(d)
 			continue
 		}
 
 		if m.IsRegular() {
-			SetFile(path, finfo)
+			setFile(path, finfo)
 			fmt.Printf("[f] %v\n", path)
 			continue
 		}
@@ -83,31 +50,30 @@ os.ModeSticky      // t: sticky
 		switch finfo.Mode() & os.ModeSymlink {
 
 			case os.ModeSymlink:     // L: Symbolic Link
-				rl, err := ReadLink(path)
+				rl, err := os.Readlink(path)
 				if err != nil {
-					log.Printf("%v", err)
+					log.Printf("%v\n", err)
 				}
-				SetLink(path, finfo)
-				fmt.Printf("[L] %v\n", path)
+
+				setLink(path, finfo, rl)
+				fmt.Printf("[L] %v -> %v\n", path, rl)
 
 			case os.ModeDevice:      // D: device
-				SetDevice(path, finfo)
+				setDevice(path, finfo)
 				fmt.Printf("[D] %v\n", path)
 
-/*
 			case os.ModeNamedPipe:   // p: named pipe (FIFO)
-				SetFifo(path, finfo)
+				setFifo(path, finfo)
 				fmt.Printf("[p] %v\n", path)
-
+/*
 			case os.ModeSocket:      // S: Unix domain socket
-				SetSocket(path, finfo)
+				setSocket(path, finfo)
 				fmt.Printf("[S] %v\n", path)
 
 			case os.ModeCharDevice:  // c: Unix character device, when ModeDevice is set
-				SetCharDev(path, finfo)
+				setCharDev(path, finfo)
 				fmt.Printf("[c] %v\n", path)
 */
-
 			default:
 				fmt.Printf("[u] %v\n", path)
 		}
@@ -115,7 +81,7 @@ os.ModeSticky      // t: sticky
 	}
 }
 
-func ScanInit(path string) {
+func scanInit(path string) {
 
         finfo, err := os.Stat(path)
         if err != nil {
@@ -124,10 +90,10 @@ func ScanInit(path string) {
 
         if finfo.IsDir() {
 
-	    d := SetDir(path, finfo)
-	    ScanDir(d)
-//	    var input string
-//	    fmt.Scanln(&input)
+	    d := setDir(path, finfo)
+	    scanDir(d)
+	    var input string
+	    fmt.Scanln(&input)
             return
 
         } else {
@@ -135,4 +101,5 @@ func ScanInit(path string) {
 	    log.Fatal("["+path+"] is not a directory.")
 
 	}
+
 }

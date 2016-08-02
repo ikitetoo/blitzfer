@@ -3,28 +3,45 @@ package main
 import (
 	"fmt"
 	"flag"
+	"sync"
 )
 
-var DEBUG bool
-var ver bool
+var debug bool
+var ver   bool
+var max   int
+
+// Passive Queue channel
+var pq chan FsMetaData = make(chan FsMetaData)
+
+// Active queue channel
+var aq chan FsMetaData = make(chan FsMetaData)
+
+// Allow us to wait on routines to finish.
+var done sync.WaitGroup
 
 const (
-        VERSION = "0.0.1"
+        version = "0.0.1"
 )
 
 func main() {
 	var source_path string
-	DEBUG = true
 
-	flag.BoolVar(&DEBUG, "verbose", false, "Verbose output")
+	debug = true
+
+	flag.BoolVar(&debug, "verbose", false, "Verbose output")
 	flag.StringVar(&source_path, "directory", ".", "Path of directory to scan.")
+	flag.IntVar(&max, "max", 100, "Max number of concurently open directories.")
 	flag.BoolVar(&ver, "version", false, "Version output")
 	flag.Parse()
 
 	if (ver == true) {
-		fmt.Printf("Blitzfer Version: %v\n", VERSION)
+		fmt.Printf("Blitzfer Version: %v\n", version)
 		return
 	}
 
-	ScanInit(source_path)
+	// listen for new directories.
+        go passiveQueue()
+
+	// Start directory scanning.
+	scanInit(source_path)
 }
