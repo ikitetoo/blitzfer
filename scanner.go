@@ -54,8 +54,7 @@ os.ModeSticky      // t: sticky
 				if err != nil {
 					log.Printf("%v\n", err)
 				}
-
-				setLink(path, finfo, rl)
+				setLink(path, finfo)
 				fmt.Printf("[L] %v -> %v\n", path, rl)
 
 			case os.ModeDevice:      // D: device
@@ -65,7 +64,7 @@ os.ModeSticky      // t: sticky
 			case os.ModeNamedPipe:   // p: named pipe (FIFO)
 				setFifo(path, finfo)
 				fmt.Printf("[p] %v\n", path)
-/*
+
 			case os.ModeSocket:      // S: Unix domain socket
 				setSocket(path, finfo)
 				fmt.Printf("[S] %v\n", path)
@@ -73,7 +72,7 @@ os.ModeSticky      // t: sticky
 			case os.ModeCharDevice:  // c: Unix character device, when ModeDevice is set
 				setCharDev(path, finfo)
 				fmt.Printf("[c] %v\n", path)
-*/
+
 			default:
 				fmt.Printf("[u] %v\n", path)
 		}

@@ -42,4 +42,28 @@ func setDevice(path string, fi os.FileInfo) FsMetaData {
 }
 
 func setFifo(path string, fi os.FileInfo) FsMetaData {
+        var f FsMetaData
+        f.path = path
+        f.info = fi
+        f.mode = fi.Mode()
+        f.parent = filepath.Dir(path)
+        return f
+}
+
+func setSocket(path string, fi os.FileInfo) FsMetaData {
+        var f FsMetaData
+        f.path = path
+        f.info = fi
+        f.mode = fi.Mode()
+        f.parent = filepath.Dir(path)
+        return f
+}
+
+func setCharDev(path string, fi os.FileInfo) FsMetaData {
+        var f FsMetaData
+        f.path = path
+        f.info = fi
+        f.mode = fi.Mode()
+        f.parent = filepath.Dir(path)
+        return f
 }
