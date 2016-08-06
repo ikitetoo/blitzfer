@@ -33,12 +33,12 @@ func setLink(path string, fi os.FileInfo) FsMetaData {
 }
 
 func setDevice(path string, fi os.FileInfo) FsMetaData {
-        var d FsMetaData
-        d.path = path
-        d.info = fi
-        d.mode = fi.Mode()
-        d.parent = filepath.Dir(path)
-        return d
+        var dev FsMetaData
+        dev.path = path
+        dev.info = fi
+        dev.mode = fi.Mode()
+        dev.parent = filepath.Dir(path)
+        return dev
 }
 
 func setFifo(path string, fi os.FileInfo) FsMetaData {

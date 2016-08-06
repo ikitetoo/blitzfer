@@ -8,8 +8,8 @@ import (
 
 func scanDir(dir FsMetaData) {
 	// Declare what we're scanning.
-	if debug {
-		fmt.Printf("[d] %v\n", dir.path)
+	if (debug == true) {
+		log.Printf("[d] %v\n", dir.path)
 	}
 
 	// Open the directory for scanning.
@@ -32,6 +32,7 @@ func scanDir(dir FsMetaData) {
 //			pq <- d
 			fmt.Printf("[d] %v\n", path)
 			scanDir(d)
+			escInsert(d)
 			continue
 		}
 
@@ -91,11 +92,12 @@ func scanInit(path string) {
         if finfo.IsDir() {
 	    d := setDir(path, finfo)
 	    scanDir(d)
-	    var input string
-	    fmt.Scanln(&input)
-            return
+//          This must have been for debugging or something.
+//	    var input string
+//	    fmt.Scanln(&input)
         } else {
 	    log.Fatal("["+path+"] is not a directory.")
 	}
 
+	return
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"log"
 	"fmt"
 	"flag"
 	"sync"
@@ -29,8 +30,6 @@ const (
 func main() {
 	var source_path string
 
-	debug = true
-
 	flag.BoolVar(&debug, "verbose", false, "Verbose output")
 	flag.StringVar(&source_path, "directory", ".", "Path of directory to scan.")
 	flag.IntVar(&max, "max", 100, "Max number of concurently open directories.")
@@ -46,10 +45,11 @@ func main() {
         go passiveQueue()
 
 	// test elasticsearch connection.
-	es_connect()
+	escConnect()
 
 	// Start directory scanning.
 	scanInit(source_path)
 
+	log.Printf("Done.\n")
 	os.Exit(0)
 }
