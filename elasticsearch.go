@@ -16,6 +16,6 @@ func es_connect() {
 		fmt.Printf("Derp: %v\n", err)
 		os.Exit(1)
 	} else {
-		fmt.Printf("Got connection [%v]", esc)
+		fmt.Printf("Got connection: [%v]\n", esc)
 	}
 }
