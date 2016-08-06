@@ -1,14 +1,17 @@
 package main
 
 import (
+	"os"
 	"fmt"
 	"flag"
 	"sync"
+        "github.com/olivere/elastic"
 )
 
 var debug bool
 var ver   bool
 var max   int
+var esc   *elastic.Client
 
 // Passive Queue channel
 var pq chan FsMetaData = make(chan FsMetaData)
@@ -42,6 +45,11 @@ func main() {
 	// listen for new directories.
         go passiveQueue()
 
+	// test elasticsearch connection.
+	es_connect()
+
 	// Start directory scanning.
 	scanInit(source_path)
+
+	os.Exit(0)
 }

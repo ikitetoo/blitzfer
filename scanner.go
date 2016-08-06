@@ -7,7 +7,6 @@ import (
 )
 
 func scanDir(dir FsMetaData) {
-
 	// Declare what we're scanning.
 	if debug {
 		fmt.Printf("[d] %v\n", dir.path)
@@ -30,7 +29,7 @@ func scanDir(dir FsMetaData) {
 		// This should be switch/case
 		if finfo.IsDir() {
 			d := setDir(path, finfo)
-			pq <- d
+//			pq <- d
 			fmt.Printf("[d] %v\n", path)
 			scanDir(d)
 			continue
@@ -41,11 +40,13 @@ func scanDir(dir FsMetaData) {
 			fmt.Printf("[f] %v\n", path)
 			continue
 		}
-/*
-os.ModeSetuid      // u: setuid
-os.ModeSetgid      // g: setgid
-os.ModeSticky      // t: sticky
-*/
+
+                /*
+                  I don't recall why I noted this... derp.
+                  os.ModeSetuid      // u: setuid
+                  os.ModeSetgid      // g: setgid
+                  os.ModeSticky      // t: sticky
+                */
 
 		switch finfo.Mode() & os.ModeSymlink {
 
@@ -88,17 +89,13 @@ func scanInit(path string) {
         }
 
         if finfo.IsDir() {
-
 	    d := setDir(path, finfo)
 	    scanDir(d)
 	    var input string
 	    fmt.Scanln(&input)
             return
-
         } else {
-
 	    log.Fatal("["+path+"] is not a directory.")
-
 	}
 
 }
