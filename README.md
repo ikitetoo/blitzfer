@@ -12,7 +12,7 @@ Pretty simple really. When all is said and done, this will stand up, ElasticSear
 ----
 
 - TODO
--- Containerize App
--- Add YAML config support to the App.
--- Daemonize / scheduled fs metadata aggregation.
--- DockerCompose everything for simple deployment.
+1. Containerize App
+2. Add YAML config support to the App.
+3. Daemonize / scheduled fs metadata aggregation.
+4. DockerCompose everything for simple deployment.
