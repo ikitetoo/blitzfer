@@ -71,6 +71,6 @@ func setCharDev(path string, fi os.FileInfo) FsMetaData {
         f.info = fi
         f.mode = fi.Mode()
         f.parent = filepath.Dir(path)
-	f.ntype = "chardevice"
+	f.ntype = "character device"
         return f
 }
