@@ -95,28 +95,28 @@ func escUpdate(node FsMetaData) {
 
         // Shove this into Elasticsearch.
 	type esDoc struct {
-		ModTime         time.Time
+		MTIME           time.Time
 		IsDir           bool
-		ParentDirectory	string
-		AbsPath         string
-                OwnerId         uint32
-                GidId           uint32
-                Perms           os.FileMode
-                OwnerName       string
-                GidName         string
+		PARENT          string
+		PATH            string
+                UID             uint32
+                GID             uint32
+                MODE            os.FileMode
+                USER            string
+                GROUP           string
 	}
 
         // Create out Elasticsearch document payload.
         esPayload := esDoc {
-		ModTime:         node.info.ModTime(),
+		MTIME:           node.info.ModTime(),
 		IsDir:           node.info.IsDir(),
-		ParentDirectory: node.parent,
-                AbsPath:         node.path,
-		OwnerId:         nodeUid,
-		GidId:           nodeGid,
-		Perms:           node.mode,
-		OwnerName:       uidToNameMap[nodeUid],
-		GidName:         gidToNameMap[nodeGid],
+		PARENT:          node.parent,
+                PATH:            node.path,
+		UID:             nodeUid,
+		GID:             nodeGid,
+		MODE:            node.mode,
+		USER:            uidToNameMap[nodeUid],
+		GROUP:           gidToNameMap[nodeGid],
 	}
 
 	if (debug == true) {
