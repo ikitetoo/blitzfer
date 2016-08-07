@@ -5,10 +5,9 @@ import ( "fmt"
 	 "log"
 	 "time"
 	 "syscall"
-	 "encoding/json"
          "github.com/olivere/elastic" )
 
-func escConnect() {
+func escConnect() *elastic.Client {
 	// Create a client and connect to http://192.168.2.10:9201
 	// TODO: This needs to go into a config file... preferably .yml
         log.Printf("Connecting to http://192.168.99.100:9200 ...\n")
@@ -45,6 +44,8 @@ func escConnect() {
 		    }
 		}
 	}
+
+	return esc
 }
 
 func escUpdate(node FsMetaData) {
@@ -74,7 +75,11 @@ func escUpdate(node FsMetaData) {
 		fmt.Printf("[%v] exists in map\n", nodeGid)
 	} else {
 		// Insert gid[gidname] into map.
+
+                // TODO:  Not sure if this is working correclty.
+		// Hmmm:  https://groups.google.com/forum/#!topic/golang-nuts/FlhYX2DAkOk 
 		g, _ := user.LookupId(nodeGidString)
+
 		gidToNameMap[nodeGid] = g.Username
 		fmt.Printf("will insert [%v / %v] into our gid map\n", nodeGid, g.Username)
 	}
@@ -93,7 +98,7 @@ func escUpdate(node FsMetaData) {
 	}
 
         // Create out Elasticsearch document payload.
-        doc := esDoc {
+        esPayload := esDoc {
 		ModTime:         node.info.ModTime(),
 		IsDir:           node.info.IsDir(),
 		ParentDirectory: node.parent,
@@ -105,11 +110,24 @@ func escUpdate(node FsMetaData) {
 		GidName:         gidToNameMap[nodeGid],
 	}
 
-	// Marshal the data prior to sending it up to Elastic Search.
-        b, err := json.Marshal(doc)
-	if err != nil {
-		fmt.Println("error:", err)
+	if (debug == true) {
+		fmt.Printf("Elastic Search Payload: %s\n", esPayload)
 	}
 
-	fmt.Printf("Elastic Search Payload: %s\n", b)
+	// Send esPayload
+	put1, err := esc.Index().Index("files").Type(node.ntype).BodyJson(esPayload).Do()
+	if err != nil {
+	    // Handle error
+	    panic(err)
+	}
+
+	fmt.Printf("Indexed file data %s to index %s, type %s\n", put1.Id, put1.Index, put1.Type)
+
+	// Flush to make sure the documents got written.
+	_, err = esc.Flush().Index("files").Do()
+	if err != nil {
+	    panic(err)
+	}
+
+
 }

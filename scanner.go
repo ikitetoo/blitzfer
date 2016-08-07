@@ -37,8 +37,9 @@ func scanDir(dir FsMetaData) {
 		}
 
 		if m.IsRegular() {
-			setFile(path, finfo)
+			f := setFile(path, finfo)
 			fmt.Printf("[f] %v\n", path)
+			escUpdate(f)
 			continue
 		}
 

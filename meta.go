@@ -9,4 +9,5 @@ type FsMetaData struct {
         info os.FileInfo
 	mode os.FileMode
         parent string
+	ntype string
 }

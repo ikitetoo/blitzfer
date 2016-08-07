@@ -54,7 +54,7 @@ func main() {
         go passiveQueue()
 
 	// test elasticsearch connection.
-	escConnect()
+	esc = escConnect()
 
 	// Start directory scanning.
 	scanInit(source_path)

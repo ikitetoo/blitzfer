@@ -11,6 +11,7 @@ func setDir(path string, fi os.FileInfo) FsMetaData {
         d.info = fi
         d.mode = fi.Mode()
         d.parent = filepath.Dir(path)
+	d.ntype = "directory"
         return d
 }
 
@@ -20,6 +21,7 @@ func setFile(path string, fi os.FileInfo) FsMetaData {
         f.info = fi
         f.mode = fi.Mode()
         f.parent = filepath.Dir(path)
+	f.ntype = "regularfile"
         return f
 }
 
@@ -29,6 +31,7 @@ func setLink(path string, fi os.FileInfo) FsMetaData {
         l.info = fi
         l.mode = fi.Mode()
         l.parent = filepath.Dir(path)
+	l.ntype = "link"
         return l
 }
 
@@ -38,6 +41,7 @@ func setDevice(path string, fi os.FileInfo) FsMetaData {
         dev.info = fi
         dev.mode = fi.Mode()
         dev.parent = filepath.Dir(path)
+	dev.ntype = "device"
         return dev
 }
 
@@ -47,6 +51,7 @@ func setFifo(path string, fi os.FileInfo) FsMetaData {
         f.info = fi
         f.mode = fi.Mode()
         f.parent = filepath.Dir(path)
+	f.ntype = "fifo"
         return f
 }
 
@@ -56,6 +61,7 @@ func setSocket(path string, fi os.FileInfo) FsMetaData {
         f.info = fi
         f.mode = fi.Mode()
         f.parent = filepath.Dir(path)
+	f.ntype = "socket"
         return f
 }
 
@@ -65,5 +71,6 @@ func setCharDev(path string, fi os.FileInfo) FsMetaData {
         f.info = fi
         f.mode = fi.Mode()
         f.parent = filepath.Dir(path)
+	f.ntype = "chardevice"
         return f
 }
