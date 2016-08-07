@@ -76,12 +76,21 @@ func escUpdate(node FsMetaData) {
 	} else {
 		// Insert gid[gidname] into map.
 
-                // TODO:  Not sure if this is working correclty.
-		// Hmmm:  https://groups.google.com/forum/#!topic/golang-nuts/FlhYX2DAkOk 
-		g, _ := user.LookupId(nodeGidString)
+	        // Waiting for go version 1.7 for this function... in the meantime.. hack city
+		// https://tip.golang.org/pkg/os/user/#LookupGroup	
+		// g, err := user.LookupGroupId(nodeGidString)
 
-		gidToNameMap[nodeGid] = g.Username
-		fmt.Printf("will insert [%v / %v] into our gid map\n", nodeGid, g.Username)
+		g, err := user.LookupId(nodeGidString)
+		if err != nil {
+	            // Handle error
+		    fmt.Printf("Node: %s", node.path)
+		    gidToNameMap[nodeGid] = "unknown"
+		    // panic(err)
+		} else {
+		    gidToNameMap[nodeGid] = g.Username
+		}
+
+		fmt.Printf("will insert [%s / %s] into our gid map\n", nodeGid, gidToNameMap[nodeGid])
 	}
 
         // Shove this into Elasticsearch.
@@ -124,10 +133,11 @@ func escUpdate(node FsMetaData) {
 	fmt.Printf("Indexed file data %s to index %s, type %s\n", put1.Id, put1.Index, put1.Type)
 
 	// Flush to make sure the documents got written.
-	_, err = esc.Flush().Index("files").Do()
+/*	_, err = esc.Flush().Index("files").Do()
 	if err != nil {
+	    fmt.Printf("E1\n")
 	    panic(err)
 	}
-
+*/
 
 }
