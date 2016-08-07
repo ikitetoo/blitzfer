@@ -99,7 +99,7 @@ func escUpdate(node FsMetaData) {
 		IsDir           bool
 		PARENT          string
 		PATH            string
-		SIZE            int64       // In bytes
+		SIZE            int64
                 UID             uint32
                 GID             uint32
                 MODE            os.FileMode
