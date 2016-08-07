@@ -32,7 +32,7 @@ func scanDir(dir FsMetaData) {
 //			pq <- d
 			fmt.Printf("[d] %v\n", path)
 			scanDir(d)
-			escInsert(d)
+			escUpdate(d)
 			continue
 		}
 
