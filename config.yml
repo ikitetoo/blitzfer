@@ -1,8 +1,9 @@
 --- 
-blitzfer: 
-  debug: true
-  directory: /tmp
-elasticsearch: 
-  index: files
-  ip: "192.168.99.100"
-  port: 9200
+configs: 
+  options:
+    debug: true
+    directory: /tmp
+  elasticsearch: 
+    index: files
+    ip: 192.168.99.100
+    port: 9200
