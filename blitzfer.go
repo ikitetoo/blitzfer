@@ -34,7 +34,8 @@ const (
         version = "0.1.0"
 )
 
-var myConfigs *Config
+// Pointers to respective configs
+var conf *BlitzferConfigs
 
 func main() {
         // Allocate map structures.
@@ -58,8 +59,8 @@ func main() {
         go passiveQueue()
 
 	// load configuration map.
-	myConfigs = loadConfig()
-
+        conf = loadBlitzferConfigs()
+//	fmt.Printf("%#v\n", myConfigs.Configs)
 	os.Exit(0)
 
 	// test elasticsearch connection.
