@@ -10,12 +10,12 @@ import (
 )
 
 // Main Variables
-var debug bool
-var ver   bool
-var max   int
-var esc   *elastic.Client
-var sourcePath string
+var ver        bool
+var max        int
+var esc        *elastic.Client
 var configFile string
+var debug      bool
+var sourcePath string
 var esIp       string
 var esPort     string
 var esIndex    string
@@ -53,12 +53,13 @@ func main() {
 	flag.BoolVar(&ver, "version", false, "Version output")
 	flag.Parse()
 
+        // Display version
 	if (ver == true) {
-		fmt.Printf("Blitzfer Version: %v\n", version)
-		return
+	  fmt.Printf("Blitzfer Version: %v\n", version)
+          return
 	}
 
-	// listen for new directories.
+	// listen for new directories. Will likely abandon this idea... let leave it for now.
         go passiveQueue()
 
 	// load configuration map.
@@ -79,10 +80,10 @@ func main() {
            fmt.Printf("-----------------------------\n\n")
         }
 
-	os.Exit(0)
-
-	// test elasticsearch connection.
+	// Setup elasticsearch connection.
 	esc = escConnect()
+
+	os.Exit(0)
 
 	// Start directory scanning.
 	scanInit(sourcePath)

@@ -8,13 +8,18 @@ import ( "fmt"
          "github.com/olivere/elastic" )
 
 func escConnect() *elastic.Client {
-	// Create a client and connect to http://192.168.2.10:9201
-	// TODO: This needs to go into a config file... preferably .yml
-        log.Printf("Connecting to http://192.168.99.100:9200 ...\n")
+
+        if ( debug == true ) {
+          log.Printf("Connecting to http://%v:%v ...\n", esIp, esPort)
+        }
+
+	var esUrl string
+        esUrl = fmt.Sprintf("http://%s:%s", esIp, esPort)
+
         esc, err := elastic.NewClient(
-                    elastic.SetURL("http://192.168.99.100:9200"),
+                    elastic.SetURL(esUrl),
 		    elastic.SetSniff(false),
-                    elastic.SetMaxRetries(10))
+                    elastic.SetMaxRetries(10)) // TODO: Add more ES options in yml for stuff like this.
 	if err != nil {
 		// Handle error
 		log.Printf("Error: %v\n", err)
@@ -25,7 +30,7 @@ func escConnect() *elastic.Client {
 		}
 
 		// Use the IndexExists service to check if a specified index exists.
-		exists, err := esc.IndexExists("files").Do()
+		exists, err := esc.IndexExists(esIndex).Do()
 		if err != nil {
 		    // Handle error
 		    panic(err)
@@ -33,7 +38,7 @@ func escConnect() *elastic.Client {
 
 		if !exists {
 		    // Create a new index.
-		    createIndex, err := esc.CreateIndex("files").Do()
+		    createIndex, err := esc.CreateIndex(esIndex).Do()
 		    if err != nil {
 		        // Handle error
 		        panic(err)
@@ -126,7 +131,7 @@ func escUpdate(node FsMetaData) {
 	}
 
 	// Send esPayload
-	put1, err := esc.Index().Index("files").Type(node.ntype).BodyJson(esPayload).Do()
+	put1, err := esc.Index().Index(esIndex).Type(node.ntype).BodyJson(esPayload).Do()
 	if err != nil {
 	    // Handle error
 	    panic(err)
@@ -135,7 +140,7 @@ func escUpdate(node FsMetaData) {
 	fmt.Printf("Indexed file data %s to index %s, type %s\n", put1.Id, put1.Index, put1.Type)
 
 	// Flush to make sure the documents got written.
-/*	_, err = esc.Flush().Index("files").Do()
+/*	_, err = esc.Flush().Index(esIndex).Do()
 	if err != nil {
 	    fmt.Printf("E1\n")
 	    panic(err)
