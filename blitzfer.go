@@ -16,6 +16,9 @@ var max   int
 var esc   *elastic.Client
 var sourcePath string
 var configFile string
+var esIp       string
+var esPort     string
+var esIndex    string
 
 // Passive Queue channel
 var pq chan FsMetaData = make(chan FsMetaData)
@@ -59,8 +62,23 @@ func main() {
         go passiveQueue()
 
 	// load configuration map.
-        conf = loadBlitzferConfigs()
-//	fmt.Printf("%#v\n", myConfigs.Configs)
+        conf       = loadBlitzferConfigs()
+        debug      = conf.Configs["configs"].Blitzfer.Debug
+        sourcePath = conf.Configs["configs"].Blitzfer.Directory
+        esIp       = conf.Configs["configs"].Elasticsearch.Ip
+        esPort     = conf.Configs["configs"].Elasticsearch.Port
+        esIndex    = conf.Configs["configs"].Elasticsearch.Index
+
+        if ( debug == true ) {
+           fmt.Printf("\n---------- Settings ---------\n")
+           fmt.Printf("%-20v %v\n", "Debug:", debug)
+           fmt.Printf("%-20v %v\n", "Directory:", sourcePath)
+           fmt.Printf("%-20v %v\n", "Elasticsearch IP:", esIp)
+           fmt.Printf("%-20v %v\n", "Elasticsearch Port:", esPort)
+           fmt.Printf("%-20v %v\n", "Elasticsearch Index:", esIndex)
+           fmt.Printf("-----------------------------\n\n")
+        }
+
 	os.Exit(0)
 
 	// test elasticsearch connection.

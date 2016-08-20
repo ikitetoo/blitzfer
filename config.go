@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"io/ioutil"
         "gopkg.in/yaml.v2"
-        "github.com/davecgh/go-spew/spew"
+//        "github.com/davecgh/go-spew/spew"
 )
 
 // Yaml Structures for Defaults and Elasticsearch configs
@@ -47,9 +47,11 @@ func loadBlitzferConfigs() *BlitzferConfigs {
         panic(err)
     }
 
-    if ( blitzferConfigs.Configs["configs"].Blitzfer.Debug == true ) {
+/*
+    if ( blitzferConfigs.Configs["configs"].Blitzfer.Debug == true) {
       spew.Dump(blitzferConfigs.Configs)
     }
+*/
 
     return &blitzferConfigs
 }
