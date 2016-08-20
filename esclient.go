@@ -20,10 +20,11 @@ func escConnect() *elastic.Client {
                     elastic.SetURL(esUrl),
 		    elastic.SetSniff(false),
                     elastic.SetMaxRetries(10)) // TODO: Add more ES options in yml for stuff like this.
+
 	if err != nil {
 		// Handle error
 		log.Printf("Error: %v\n", err)
-		log.Fatal("Failed to connect to elasticsearch.")
+		log.Fatal("Failed to connect to Elasticsearch.")
 	} else {
 		if (debug == true) {
 			fmt.Printf("Got connection: [%v]\n", esc)
