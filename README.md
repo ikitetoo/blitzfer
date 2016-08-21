@@ -20,4 +20,4 @@ Pretty simple really. When all is said and done, this will stand up, ElasticSear
 ## Screenshots
 
 Still in its early stages, but here's and example of what I'm going for.
-![alt text](blitzfer1.png "Blitzfer Kibana Dash screenshot.")
+![alt text](kibana/blitzfer1.png "Blitzfer Kibana Dash screenshot.")
