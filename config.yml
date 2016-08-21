@@ -3,7 +3,7 @@ configs:
 
   blitzfer:
     debug: true
-    directory: /tmp
+    directory: /Users/dennis/craftbukkit
 
   elasticsearch:
     ip: 192.168.99.100

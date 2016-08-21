@@ -16,3 +16,8 @@ Pretty simple really. When all is said and done, this will stand up, ElasticSear
 2. ~~Add YAML config support to the App.~~
 3. Daemonize / scheduled fs metadata aggregation.
 4. DockerCompose everything for simple deployment.
+
+## Screenshots
+
+Still in its early stages, but here's and example of what I'm going for.
+![alt text](blitzfer1.png "Blitzfer Kibana Dash screenshot.")

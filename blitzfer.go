@@ -83,8 +83,6 @@ func main() {
 	// Setup elasticsearch connection.
 	esc = escConnect()
 
-	os.Exit(0)
-
 	// Start directory scanning.
 	scanInit(sourcePath)
 
